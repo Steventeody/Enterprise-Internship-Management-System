@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Laporan Evaluasi — {{ evaluation.intern.full_name }}</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @page {
+      size: A4;
+      margin: 2cm 2.5cm 2.5cm 2.5cm;
+    }
+
+    body {
+      font-family: "Arial", "Helvetica Neue", sans-serif;
+      font-size: 10pt;
+      color: #1a1a2e;
+      line-height: 1.55;
+    }
+
+    /* ── Header / Kop ────────────────────────────── */
+    .kop {
+      display: flex;
+      align-items: center;
+      border-bottom: 3px solid #0f3460;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+
+    .kop-logo {
+      width: 54px;
+      height: 54px;
+      background: #0f3460;
+      border-radius: 8px;
+      margin-right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .kop-logo-text {
+      color: #ffffff;
+      font-size: 18pt;
+      font-weight: 900;
+      text-align: center;
+      line-height: 1;
+      padding: 14px 8px;
+    }
+
+    .kop-text h1 {
+      font-size: 14pt;
+      font-weight: 700;
+      color: #0f3460;
+      letter-spacing: 0.5px;
+    }
+
+    .kop-text p {
+      font-size: 8.5pt;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    /* ── Judul Dokumen ───────────────────────────── */
+    .doc-title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .doc-title h2 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #0f3460;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1.5px solid #16213e;
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+
+    /* ── Seksi ───────────────────────────────────── */
+    .section {
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #0f3460;
+      background: #e8f0fe;
+      padding: 5px 10px;
+      border-left: 4px solid #0f3460;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Info Grid ───────────────────────────────── */
+    .info-grid {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .info-grid td {
+      padding: 4px 8px;
+      vertical-align: top;
+      font-size: 10pt;
+    }
+
+    .info-grid td.label {
+      width: 32%;
+      color: #555;
+      font-weight: 600;
+    }
+
+    .info-grid td.sep {
+      width: 3%;
+      color: #333;
+    }
+
+    .info-grid td.value {
+      color: #1a1a2e;
+    }
+
+    /* ── Tabel Skor ──────────────────────────────── */
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5pt;
+    }
+
+    .score-table thead tr {
+      background: #0f3460;
+      color: #ffffff;
+    }
+
+    .score-table thead th {
+      padding: 7px 10px;
+      text-align: left;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .score-table thead th.center { text-align: center; }
+
+    .score-table tbody tr:nth-child(even) {
+      background: #f4f7fb;
+    }
+
+    .score-table tbody tr:hover {
+      background: #e8f0fe;
+    }
+
+    .score-table tbody td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #dde3ef;
+      color: #1a1a2e;
+    }
+
+    .score-table tbody td.center { text-align: center; }
+    .score-table tbody td.num { text-align: right; }
+
+    .score-table tfoot tr {
+      background: #16213e;
+      color: #ffffff;
+    }
+
+    .score-table tfoot td {
+      padding: 7px 10px;
+      font-weight: 700;
+    }
+
+    .score-table tfoot td.num { text-align: right; }
+
+    /* ── Badge Grade ─────────────────────────────── */
+    .grade-box {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11pt;
+      color: #fff;
+    }
+
+    .grade-A { background: #16a34a; }
+    .grade-B { background: #2563eb; }
+    .grade-C { background: #d97706; }
+    .grade-D { background: #ea580c; }
+    .grade-E { background: #dc2626; }
+
+    /* ── Narasi ──────────────────────────────────── */
+    .narrative-box {
+      border: 1px solid #dde3ef;
+      border-radius: 4px;
+      padding: 10px 12px;
+      background: #fafbfd;
+      font-size: 9.5pt;
+      color: #333;
+      min-height: 48px;
+    }
+
+    /* ── Tanda Tangan ────────────────────────────── */
+    .signature-section {
+      margin-top: 28px;
+      page-break-inside: avoid;
+    }
+
+    .sig-grid {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .sig-grid td {
+      width: 33.33%;
+      text-align: center;
+      padding: 0 12px;
+      vertical-align: top;
+    }
+
+    .sig-label {
+      font-size: 9pt;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 56px;
+    }
+
+    .sig-line {
+      border-top: 1.5px solid #333;
+      margin-top: 4px;
+      padding-top: 5px;
+    }
+
+    .sig-name {
+      font-size: 9pt;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .sig-role {
+      font-size: 8pt;
+      color: #666;
+    }
+
+    /* ── Footer ──────────────────────────────────── */
+    .doc-footer {
+      margin-top: 20px;
+      border-top: 1px solid #ccd4e0;
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 7.5pt;
+      color: #888;
+    }
+
+    /* ── Status Badge ────────────────────────────── */
+    .status-badge {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 3px;
+      font-size: 8pt;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-draft      { background: #e5e7eb; color: #374151; }
+    .status-submitted  { background: #dbeafe; color: #1d4ed8; }
+    .status-approved   { background: #d1fae5; color: #065f46; }
+    .status-finalized  { background: #0f3460; color: #ffffff; }
+
+    /* WeasyPrint tidak pakai flexbox sepenuhnya, pakai table untuk layout */
+    .flex-row {
+      display: table;
+      width: 100%;
+    }
+
+    .flex-col {
+      display: table-cell;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ KOP SURAT ══════════════════════════════════════════ -->
+  <div class="kop">
+    <div class="kop-logo">
+      <div class="kop-logo-text">IMS</div>
+    </div>
+    <div class="kop-text">
+      <h1>Internship Management System</h1>
+      <p>Laporan Evaluasi Magang &nbsp;|&nbsp; PKL CMS &copy; 2025</p>
+    </div>
+  </div>
+
+  <!-- ══ JUDUL ═══════════════════════════════════════════════ -->
+  <div class="doc-title">
+    <h2>Laporan Evaluasi Mahasiswa Magang</h2>
+  </div>
+
+  <!-- ══ SEKSI 1: IDENTITAS INTERN ════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">1. Identitas Mahasiswa Magang</div>
+    <table class="info-grid">
+      <tr>
+        <td class="label">Nama Lengkap</td>
+        <td class="sep">:</td>
+        <td class="value">{{ evaluation.intern.full_name }}</td>
+        <td class="label">Periode Evaluasi</td>
+        <td class="sep">:</td>
+        <td class="value">{{ evaluation.period_label }}</td>
+      </tr>
+      <tr>
+        <td class="label">Email</td>
+        <td class="sep">:</td>
+        <td class="value">{{ evaluation.intern.email }}</td>
+        <td class="label">Status Evaluasi</td>
+        <td class="sep">:</td>
+        <td class="value">
+          <span class="status-badge status-{{ evaluation.status }}">
+            {{ evaluation.get_status_display }}
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Departemen</td>
+        <td class="sep">:</td>
+        <td class="value">{{ evaluation.intern.department|default:"—" }}</td>
+        <td class="label">Tanggal Dibuat</td>
+        <td class="sep">:</td>
+        <td class="value">{{ evaluation.created_at|date:"d F Y" }}</td>
+      </tr>
+      <tr>
+        <td class="label">Mentor / Evaluator</td>
+        <td class="sep">:</td>
+        <td class="value">{{ evaluation.mentor.full_name }}</td>
+        <td class="label">Disetujui oleh</td>
+        <td class="sep">:</td>
+        <td class="value">{{ evaluation.approved_by.full_name|default:"—" }}</td>
+      </tr>
+      {% if intern_profile %}
+      <tr>
+        <td class="label">NIM</td>
+        <td class="sep">:</td>
+        <td class="value">{{ intern_profile.student_id }}</td>
+        <td class="label">Universitas</td>
+        <td class="sep">:</td>
+        <td class="value">{{ intern_profile.university_name }}</td>
+      </tr>
+      <tr>
+        <td class="label">Program Studi</td>
+        <td class="sep">:</td>
+        <td class="value">{{ intern_profile.study_program|default:"—" }}</td>
+        <td class="label">Masa Magang</td>
+        <td class="sep">:</td>
+        <td class="value">
+          {{ intern_profile.internship_start|date:"d M Y" }} —
+          {{ intern_profile.internship_end|date:"d M Y" }}
+        </td>
+      </tr>
+      {% endif %}
+    </table>
+  </div>
+
+  <!-- ══ SEKSI 2: RINCIAN SKOR ════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">2. Rincian Penilaian per Kriteria</div>
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th style="width:5%">#</th>
+          <th style="width:30%">Kriteria</th>
+          <th style="width:18%">Kategori</th>
+          <th class="center" style="width:12%">Bobot</th>
+          <th class="center" style="width:12%">Skor Maks</th>
+          <th class="center" style="width:12%">Skor</th>
+          <th class="center" style="width:11%">Terbobot</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for score in scores %}
+        <tr>
+          <td class="center">{{ forloop.counter }}</td>
+          <td>{{ score.criteria.name }}</td>
+          <td>{{ score.criteria.get_category_display }}</td>
+          <td class="center">{{ score.criteria.weight|floatformat:0 }}%</td>
+          <td class="center">{{ score.criteria.max_score }}</td>
+          <td class="center"><strong>{{ score.raw_score|floatformat:1 }}</strong></td>
+          <td class="center">{{ score.weighted_score|floatformat:2 }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" style="text-align:center;color:#888;padding:16px;">
+            Belum ada skor yang diinput.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5" style="text-align:right;">Skor Akhir (Weighted Total)</td>
+          <td class="num">{{ evaluation.final_score|floatformat:2|default:"—" }}</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- ══ SEKSI 3: HASIL AKHIR ══════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">3. Hasil Akhir &amp; Grade</div>
+    <table class="info-grid">
+      <tr>
+        <td class="label" style="width:28%">Skor Akhir</td>
+        <td class="sep">:</td>
+        <td class="value" style="width:22%">
+          <strong>{{ evaluation.final_score|floatformat:2|default:"—" }}</strong>
+        </td>
+        <td class="label" style="width:18%">Grade</td>
+        <td class="sep">:</td>
+        <td class="value">
+          {% if evaluation.grade %}
+            <span class="grade-box grade-{{ evaluation.grade }}">{{ evaluation.grade }}</span>
+            &nbsp; {{ evaluation.get_grade_display }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ══ SEKSI 4: NARASI MENTOR ════════════════════════════════ -->
+  {% if evaluation.narrative or evaluation.recommendation %}
+  <div class="section">
+    <div class="section-title">4. Narasi &amp; Rekomendasi Mentor</div>
+    {% if evaluation.narrative %}
+    <p style="font-size:9pt;font-weight:600;color:#555;margin-bottom:4px;">Narasi / Komentar:</p>
+    <div class="narrative-box">{{ evaluation.narrative }}</div>
+    {% endif %}
+    {% if evaluation.recommendation %}
+    <p style="font-size:9pt;font-weight:600;color:#555;margin-bottom:4px;margin-top:8px;">Rekomendasi:</p>
+    <div class="narrative-box">{{ evaluation.recommendation }}</div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- ══ TANDA TANGAN ══════════════════════════════════════════ -->
+  <div class="signature-section">
+    <div class="section-title">Pengesahan</div>
+    <br/>
+    <table class="sig-grid">
+      <tr>
+        <td>
+          <div class="sig-label">Mentor / Evaluator,</div>
+          <div class="sig-line">
+            <div class="sig-name">{{ evaluation.mentor.full_name }}</div>
+            <div class="sig-role">Mentor Perusahaan</div>
+          </div>
+        </td>
+        <td>
+          <div class="sig-label">Admin HR,</div>
+          <div class="sig-line">
+            <div class="sig-name">{{ approved_by_name|default:"____________________" }}</div>
+            <div class="sig-role">Admin (HR)</div>
+          </div>
+        </td>
+        <td>
+          <div class="sig-label">Mahasiswa,</div>
+          <div class="sig-line">
+            <div class="sig-name">{{ evaluation.intern.full_name }}</div>
+            <div class="sig-role">Intern / Mahasiswa PKL</div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ══ FOOTER ════════════════════════════════════════════════ -->
+  <div class="doc-footer">
+    <span>Digenerate pada: {{ generated_at }}</span>
+    <span>IMS — Internship Management System &copy; 2025</span>
+    <span>Halaman <pdf:pagenumber /> dari <pdf:pagecount /></span>
+  </div>
+
+</body>
+</html>
